@@ -1,7 +1,8 @@
+![header](https://github.com/2023-SMHRD-IS-CLOUD-1/StrongRepo/assets/142488262/921c791e-0e8f-4e35-8c21-e23a3cdbf3f3)
+
 #  Drug is Death
 > ### Team name : 강력 1팀
-> ![image](https://github.com/2023-SMHRD-IS-CLOUD-1/StrongRepo/assets/142488262/921c791e-0e8f-4e35-8c21-e23a3cdbf3f3)
-
+> 
 </br>
 
 ## 1. 제작 기간 & 참여 인원
