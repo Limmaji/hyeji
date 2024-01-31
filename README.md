@@ -2,7 +2,7 @@
         <img src="https://github.com/Limmaji/hyeji/assets/118683437/36549b89-cf1d-493c-95db-2c7824672f35" height="230">
  </a>
 
-#  Drug is Death 💊
+# 💊 Drug is Death 💊
 > ### Team name : 강력 1팀
 > 
 </br>
