@@ -1,6 +1,6 @@
 
 <a href="https://github.com/2023-SMHRD-IS-CLOUD-1/StrongRepo">
-    <img src="https://github.com/Limmaji/hyeji/assets/118683437/f542aa3d-68c3-4628-8a26-ce4bb3c342f2" alt="header" width="800">
+    <img src="(https://github.com/Limmaji/hyeji/assets/118683437/36549b89-cf1d-493c-95db-2c7824672f35)" alt="header" width="800">
 </a>
 
 #  Drug is Death
