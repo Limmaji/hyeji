@@ -1,6 +1,7 @@
-[![header](https://github.com/Limmaji/hyeji/assets/118683437/f542aa3d-68c3-4628-8a26-ce4bb3c342f2)](https://github.com/2023-SMHRD-IS-CLOUD-1/StrongRepo)
 
-
+<a href="https://github.com/2023-SMHRD-IS-CLOUD-1/StrongRepo">
+    <img src="https://github.com/Limmaji/hyeji/assets/118683437/f542aa3d-68c3-4628-8a26-ce4bb3c342f2" alt="header" width="800">
+</a>
 
 #  Drug is Death
 > ### Team name : 강력 1팀
