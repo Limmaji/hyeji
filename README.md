@@ -13,25 +13,26 @@
          
 </br>
 
-## 1. 제작 기간 & 참여 인원
-- 2023년 2월 18일 ~ 4월 5일
-
+## 1. 제작 기간 & 역할
+- 기간 : 2023년 11월 22일 ~ 12월 07일 (21일 소요)
+- 역할 : 대시보드 구현, 로그인 및 회원가입 기능 구현
+ 
 </br>
 
 ## 2. 사용 기술
 #### `Back-end`
   - Java 8
-  - Spring Boot 2.3
-  - Gradle
-  - Spring Data JPA
-  - QueryDSL
-  - H2
-  - MySQL 5.7
-  - Spring Security
-  - Jsoup
+  - JQuery
+  - JavaScript
+  - Oracle
+  - Chart.js
+  - BootStrap
+  - JSP
+
 #### `Front-end`
-  - Vue.js 3.0
-  - Element UI
+  - HTML
+  - CSS
+  - JavaScript
 
 </br>
 
