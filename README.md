@@ -5,21 +5,20 @@
  # 💊 Drug is Death 💊
 
 > ### Team name : 강력 1팀
+>
+> #### openCV기반 10대 청소년 대상 마약 예방 교육 자료 및 체험 서비스
+>
+> #### 역할 : 대시보드 구현, 로그인 및 회원가입 기능 구현
+>
+> #### 기간 : 2023년 11월 22일 ~ 12월 07일 (21일 소요)
+> 
 
 <details>
 <summary><b>팀 프로젝트</b></summary>
-
-
-         
-</br>
-
-## 1. 제작 기간 & 역할
-- 기간 : 2023년 11월 22일 ~ 12월 07일 (21일 소요)
-- 역할 : 대시보드 구현, 로그인 및 회원가입 기능 구현
  
 </br>
 
-## 2. 사용 기술
+## 1. 사용 기술
 #### `Back-end`
   - Java 8
   - JQuery
@@ -38,37 +37,34 @@
 
 
 ## 3. ERD 설계
-![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/final_erd.png)
-![](https://github.com/JungHyung2/gitio.io/blob/master/assets/images/portfolio/p1.jpg)
+![]()
 
 
-## 4. 핵심 기능
-이 서비스의 핵심 기능은 컨텐츠 등록 기능입니다.  
-사용자는 단지 컨텐츠의 카테고리를 선택하고, URL만 입력하면 끝입니다.  
-이 단순한 기능의 흐름을 보면, 서비스가 어떻게 동작하는지 알 수 있습니다.  
+
+## 4. 기능
+
 
 <details>
 <summary><b>핵심 기능 설명 펼치기</b></summary>
 <div markdown="1">
 
 ### 4.1. 전체 흐름
-![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow1.png)
+![]()
 
 ### 4.2. 사용자 요청
-![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_vue.png)
+![]()
 
-- **URL 정규식 체크** :pushpin: [코드 확인](https://github.com/Integerous/goQuality/blob/b587bbff4dce02e3bec4f4787151a9b6fa326319/frontend/src/components/PostInput.vue#L67)
-  - Vue.js로 렌더링된 화면단에서, 사용자가 등록을 시도한 URL의 모양새를 정규식으로 확인합니다.
-  - URL의 모양새가 아닌 경우, 에러 메세지를 띄웁니다.
+- **URL 정규식 체크** :pushpin: [코드 확인]()
+  - .
 
 - **Axios 비동기 요청** :pushpin: [코드 확인]()
-  - URL의 모양새인 경우, 컨텐츠를 등록하는 POST 요청을 비동기로 날립니다.
+  - .
 
 ### 4.3. Controller
 
-![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_controller.png)
+![]()
 
-- **요청 처리** :pushpin: [코드 확인](https://github.com/JungHyung2/gitio.io/blob/d35d29b64c0e8b9653862bdcc1e6b997d2436ec9/index.html#L57C1-L57C202)
+- **요청 처리** :pushpin: [코드 확인]()
   - Controller에서는 요청을 화면단에서 넘어온 요청을 받고, Service 계층에 로직 처리를 위임합니다.
 
 - **결과 응답** :pushpin: [코드 확인]()
@@ -76,7 +72,7 @@
 
 ### 4.4. Service
 
-![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_service1.png)
+![]()
 
 - **Http 프로토콜 추가 및 trim()** :pushpin: [코드 확인]()
   - 사용자가 URL 입력 시 Http 프로토콜을 생략하거나 공백을 넣은 경우,  
@@ -87,7 +83,7 @@
   - 이 때, 빠른 응답을 위해 Request Method를 GET이 아닌 HEAD를 사용했습니다.
   - (HEAD 메소드는 GET 메소드의 응답 결과의 Body는 가져오지 않고, Header만 확인하기 때문에 GET 메소드에 비해 응답속도가 빠릅니다.)
 
-  ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_service2.png)
+  ![]()
 
 - **Jsoup 이미지, 제목 파싱** :pushpin: [코드 확인]()
   - URL 접속 확인결과 유효하면 Jsoup을 사용해서 입력된 URL의 이미지와 제목을 파싱합니다.
@@ -97,7 +93,7 @@
 
 ### 4.5. Repository
 
-![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_repo.png)
+![]()
 
 - **컨텐츠 저장** :pushpin: [코드 확인]()
   - URL 유효성 체크와 이미지, 제목 파싱이 끝난 컨텐츠는 DB에 저장합니다.
@@ -113,7 +109,7 @@
 - 저는 이 서비스가 페이스북이나 인스타그램 처럼 가볍게, 자주 사용되길 바라는 마음으로 개발했습니다.  
 때문에 페이징 처리도 무한 스크롤을 적용했습니다.
 
-- 하지만 [무한스크롤, 페이징 혹은 “더보기” 버튼? 어떤 걸 써야할까](https://cyberx.tistory.com/82) 라는 글을 읽고 무한 스크롤의 단점들을 알게 되었고,  
+- 하지만 [무한스크롤, 페이징 혹은 “더보기” 버튼? 어떤 걸 써야할까]() 라는 글을 읽고 무한 스크롤의 단점들을 알게 되었고,  
 다양한 기준(카테고리, 사용자, 등록일, 인기도)의 게시물 필터 기능을 넣어서 이를 보완하고자 했습니다.
 
 - 그런데 게시물이 필터링 된 상태에서 무한 스크롤이 동작하면,  
