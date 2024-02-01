@@ -1,6 +1,9 @@
 <a href="https://github.com/2023-SMHRD-IS-CLOUD-1/StrongRepo">
         <img src="https://github.com/Limmaji/hyeji/assets/118683437/36549b89-cf1d-493c-95db-2c7824672f35" height="230">
  </a>
+<details>
+        
+ 
 
 # 💊 Drug is Death 💊
 > ### Team name : 강력 1팀
@@ -8,7 +11,7 @@
 </br>
 
 ## 1. 제작 기간 & 참여 인원
-- 2019년 2월 18일 ~ 4월 5일
+- 2023년 2월 18일 ~ 4월 5일
 
 </br>
 
@@ -28,6 +31,7 @@
   - Element UI
 
 </br>
+</details> 
 
 ## 3. ERD 설계
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/final_erd.png)
