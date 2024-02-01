@@ -36,22 +36,23 @@
 </br>
 
 
-## 3. ERD 설계
-![]()
+## 2. ERD 설계
+![image](https://github.com/Limmaji/hyeji/assets/118683437/bafbbaf7-6c10-4ab6-b4f5-752477a2b423)
+)
 
 
 
-## 4. 기능
-
+## 3. 기능
+> 연령 / 지역 / 년도별 통계 대시보드 구현
 
 <details>
-<summary><b>핵심 기능 설명 펼치기</b></summary>
+<summary><b>대시보드</b></summary>
 <div markdown="1">
 
-### 4.1. 전체 흐름
+### 3.1. 전체 흐름
 ![]()
 
-### 4.2. 사용자 요청
+### 3.2. 사용자 요청
 ![]()
 
 - **URL 정규식 체크** :pushpin: [코드 확인]()
@@ -60,7 +61,7 @@
 - **Axios 비동기 요청** :pushpin: [코드 확인]()
   - .
 
-### 4.3. Controller
+### 3.3. Controller
 
 ![]()
 
@@ -70,7 +71,7 @@
 - **결과 응답** :pushpin: [코드 확인]()
   - Service 계층에서 넘어온 로직 처리 결과(메세지)를 화면단에 응답해줍니다.
 
-### 4.4. Service
+### 3.4. Service
 
 ![]()
 
@@ -91,7 +92,7 @@
   - 컨텐츠에 이미지가 없을 경우, 미리 설정해둔 기본 이미지를 사용하고, 제목이 없을 경우 생략합니다.
 
 
-### 4.5. Repository
+### 3.5. Repository
 
 ![]()
 
@@ -104,8 +105,8 @@
 
 </br>
 
-## 5. 핵심 트러블 슈팅
-### 5.1. 컨텐츠 필터와 페이징 처리 문제
+## 4. 핵심 트러블 슈팅
+### 4.1. 컨텐츠 필터와 페이징 처리 문제
 - 저는 이 서비스가 페이스북이나 인스타그램 처럼 가볍게, 자주 사용되길 바라는 마음으로 개발했습니다.  
 때문에 페이징 처리도 무한 스크롤을 적용했습니다.
 
@@ -201,7 +202,7 @@ public Page<Post> findAllByTagName(String tagName, Pageable pageable) {
 
 </br>
 
-## 6. 그 외 트러블 슈팅
+## 5. 그 외 트러블 슈팅
 <details>
 <summary>npm run dev 실행 오류</summary>
 <div markdown="1">
