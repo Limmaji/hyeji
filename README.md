@@ -187,17 +187,15 @@ public class DashBoardService implements Command {
 
 ### 3.4. Chart
 
-#### 1. Morris-Line-Chart
+#### 1. Bar-Chart : 연령별 단속 현황
 
-<b>morris-data2.js</b>
-<div markdown="1">  
         
+<b>dashboard1.min.js</b>
+<div markdown="1">
+       
 ~~~java
 
-        $(function() {
-	"use strict";
-
-	$.ajax({
+$.ajax({
 
 		// 데이터 요청 주소
 		url: "DashBoard.do",
@@ -213,32 +211,16 @@ public class DashBoardService implements Command {
 
 			// 서버로부터 받은 JSON 객체의 c_year와 c_num 속성값 출력
 			if (result) {
-				var line = new Morris.Line({
-					element: 'morris-line-chart',
-					resize: true,
-					data: [
-						{ y: result[0].c_year.toString() , item1: result[0].c_num },
-						{ y: result[1].c_year.toString(), item1: result[1].c_num },
-						{ y: result[2].c_year.toString(), item1: result[2].c_num },
-						{ y: result[3].c_year.toString(), item1: result[3].c_num },
-						{ y: result[4].c_year.toString(), item1: result[4].c_num },
-						{ y: result[5].c_year.toString(), item1: result[5].c_num },
-						{ y: result[6].c_year.toString(), item1: result[6].c_num },
-						{ y: result[7].c_year.toString(), item1: result[7].c_num },
-						{ y: result[8].c_year.toString(), item1: result[8].c_num },
-						{ y: result[9].c_year.toString(), item1: result[9].c_num }
-
-					],
-					xkey: 'y',
-					ykeys: ['item1'],
-					labels: ['Item 1'],
-					gridLineColor: '#eef0f2',
-					lineColors: ['#e4281c'],
-					lineWidth: 3,
-					hideHover: 'auto'
-
-
-				});
+				new Chartist.Bar(".net-income",
+					{
+						labels: ["0-19세", "20대", "30대", "40대", "50대", "60세 이상"],
+						series: [[result[48].a_num + result[49].a_num, result[47].a_num, result[46].a_num, result[45].a_num, result[44].a_num, result[43].a_num ]]
+					},
+					e, [["screen and (max-width: 640px)",
+						{
+							seriesBarDistance: 7,
+							axisX: { labelInterpolationFnc: function(e) { return e[0] } }
+						}]])
 
 			} else {
 				// 예외 처리: res가 비어있거나 유효한 데이터가 없는 경우
@@ -250,12 +232,17 @@ public class DashBoardService implements Command {
 			console.log("DashBoard.jsp3");
 		}
 	});
-});
 ~~~
 
 
 
-#### 2. Polar-Chart
+
+
+
+
+
+
+#### 2. Polar-Chart : 직업별 단속 현황
 <details>
         
 <summary><b>chartjs.init2.js</b></summary>
@@ -327,15 +314,19 @@ $(function() {
 </details>
 
 
-#### 3. Bar-Chart
+#### 3. Morris-Line-Chart : 단속 현황
+
 <details>
+
+<summary><b>morris-data2.js</b></summary>
+<div markdown="1">  
         
-<summary><b>dashboard1.min.js</b></summary>
-<div markdown="1">
-       
 ~~~java
 
-$.ajax({
+        $(function() {
+	"use strict";
+
+	$.ajax({
 
 		// 데이터 요청 주소
 		url: "DashBoard.do",
@@ -351,16 +342,32 @@ $.ajax({
 
 			// 서버로부터 받은 JSON 객체의 c_year와 c_num 속성값 출력
 			if (result) {
-				new Chartist.Bar(".net-income",
-					{
-						labels: ["0-19세", "20대", "30대", "40대", "50대", "60세 이상"],
-						series: [[result[48].a_num + result[49].a_num, result[47].a_num, result[46].a_num, result[45].a_num, result[44].a_num, result[43].a_num ]]
-					},
-					e, [["screen and (max-width: 640px)",
-						{
-							seriesBarDistance: 7,
-							axisX: { labelInterpolationFnc: function(e) { return e[0] } }
-						}]])
+				var line = new Morris.Line({
+					element: 'morris-line-chart',
+					resize: true,
+					data: [
+						{ y: result[0].c_year.toString() , item1: result[0].c_num },
+						{ y: result[1].c_year.toString(), item1: result[1].c_num },
+						{ y: result[2].c_year.toString(), item1: result[2].c_num },
+						{ y: result[3].c_year.toString(), item1: result[3].c_num },
+						{ y: result[4].c_year.toString(), item1: result[4].c_num },
+						{ y: result[5].c_year.toString(), item1: result[5].c_num },
+						{ y: result[6].c_year.toString(), item1: result[6].c_num },
+						{ y: result[7].c_year.toString(), item1: result[7].c_num },
+						{ y: result[8].c_year.toString(), item1: result[8].c_num },
+						{ y: result[9].c_year.toString(), item1: result[9].c_num }
+
+					],
+					xkey: 'y',
+					ykeys: ['item1'],
+					labels: ['Item 1'],
+					gridLineColor: '#eef0f2',
+					lineColors: ['#e4281c'],
+					lineWidth: 3,
+					hideHover: 'auto'
+
+
+				});
 
 			} else {
 				// 예외 처리: res가 비어있거나 유효한 데이터가 없는 경우
@@ -372,9 +379,12 @@ $.ajax({
 			console.log("DashBoard.jsp3");
 		}
 	});
+});
 ~~~
-</details>
 
+
+</details>
+</br>
 
 ## 4. 회고 / 느낀점
 
@@ -382,5 +392,5 @@ $.ajax({
 
 >ㅜ
 
-</detail>
+</details>
 
