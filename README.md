@@ -46,11 +46,8 @@
 
 
 ## 3. 담당 기능
-
-</br>
-<b> MVC 패턴을 이용한 대시보드 구현</b>
-</br>
-<b>연령 / 지역 / 년도별 통계에 따른 대시보드 구현</b>
+### MVC 패턴을 이용한 대시보드 구현
+   - 연령 / 지역 / 년도별 통계에 따른 대시보드 구현
 
 ![image](https://github.com/Limmaji/hyeji/assets/118683437/6057f0be-d2de-4f87-a764-897ec171a420)
  
@@ -58,24 +55,20 @@
 
 ### 3.1. 전체 흐름
 
-</br>
-
->  1. JQuery 사용, AJAX를 통해 요청 수행
->  2. DB에서 데이터 받아오기
->  3. 차트 생성
+>  #### 1. JQuery 사용, AJAX를 통해 요청 수행
+>  #### 2. DB에서 데이터 받아오기
+>  #### 3. 차트 생성
 > 
-> ####  [main.jsp](Strong1team2/src/main/webapp/WEB-INF/main.jsp) </br>
-> ####  [FrontController.java](Strong1team2/src/main/java/com/smhrd/frontcontroller/FrontController.java) </br>
-> ####  [DashBoardService.java](Strong1team2/src/main/java/com/smhrd/controller/DashBoardService.java) </br>
-> ####  [DashBoardMemberVO.java](Strong1team2/src/main/java/com/smhrd/model/DashBoardMemberVO.java) </br>
-> ####  [DashBoardDAO.java](Strong1team2/src/main/java/com/smhrd/model/DashBoardDAO.java) </br>
-> ####  [DashMemberMapper.xml](Strong1team2/src/main/java/com/smhrd/database/DashMemberMapper.xml) </br>
+> ####  - [main.jsp](Strong1team2/src/main/webapp/WEB-INF/main.jsp) </br>
+> ####  - [FrontController.java](Strong1team2/src/main/java/com/smhrd/frontcontroller/FrontController.java) </br>
+> ####  - [DashBoardService.java](Strong1team2/src/main/java/com/smhrd/controller/DashBoardService.java) </br>
+> ####  - [DashBoardMemberVO.java](Strong1team2/src/main/java/com/smhrd/model/DashBoardMemberVO.java) </br>
+> ####  - [DashBoardDAO.java](Strong1team2/src/main/java/com/smhrd/model/DashBoardDAO.java) </br>
+> ####  - [DashMemberMapper.xml](Strong1team2/src/main/java/com/smhrd/database/DashMemberMapper.xml) </br>
 
 </br>
 
 ### 3.2. Controller
-
-</br>
 
 <summary><b>Controller</b></summary>
 
