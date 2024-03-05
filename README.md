@@ -445,142 +445,56 @@ $(function() {
 
 
 ## 3. 담당 기능
-#### - 나이 예측 모델 구현
-#### - 성별 예측 모델 구현
-#### - 로그아웃 기능 구현
+ - 나이 예측 모델 구현
+ - 성별 예측 모델 구현
+ - 로그아웃 기능 구현
 
-![image](https://github.com/Limmaji/hyeji/assets/118683437/6057f0be-d2de-4f87-a764-897ec171a420)
- 
+</br>
 </br>
 
-### 3.1. 전체 흐름
 
->  #### 1. JQuery 사용, AJAX를 통해 요청 수행
->  #### 2. DB에서 데이터 받아오기
->  #### 3. 차트 생성
+### 3.1. 
+
+>  #### 
+>  #### 
+>  #### 
 > 
-> ####  - [main.jsp](Strong1team2/src/main/webapp/WEB-INF/main.jsp) </br>
-> ####  - [FrontController.java](Strong1team2/src/main/java/com/smhrd/frontcontroller/FrontController.java) </br>
-> ####  - [DashBoardService.java](Strong1team2/src/main/java/com/smhrd/controller/DashBoardService.java) </br>
-> ####  - [DashBoardMemberVO.java](Strong1team2/src/main/java/com/smhrd/model/DashBoardMemberVO.java) </br>
-> ####  - [DashBoardDAO.java](Strong1team2/src/main/java/com/smhrd/model/DashBoardDAO.java) </br>
-> ####  - [DashMemberMapper.xml](Strong1team2/src/main/java/com/smhrd/database/DashMemberMapper.xml) </br>
+
 
 </br>
 
-### 3.2. Controller
+### 3.2. 
 
 <summary><b>Controller</b></summary>
 
 <div markdown="1">
 
 ~~~java
-@WebServlet("*.do")
-public class FrontController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
 
-	private HashMap<String, Command> map = null;
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		map = new HashMap<String, Command>();
-		
-		map.put("DashBoard.do", new DashBoardService());
-	}
-
-	protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		request.setCharacterEncoding("UTF-8");
-
-		String uri = request.getRequestURI();
-
-		String cp = request.getContextPath();
-
-		String finaluri = uri.substring(cp.length() + 1);
-
-		String path = null;
-		Command com = null;
-		if (finaluri.contains("Go")) {
-			path = finaluri.substring(2).replaceAll(".do", "");
-		} else {
-			com = map.get(finaluri);
-			path = com.execute(request, response);
-		}
-		// 3. 페이지 이동
-		if (path == null) {
-		} else if (path.contains("redirect:/")) {
-			response.sendRedirect(path.substring(10));
-		} else {
-			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/" + path + ".jsp");
-			rd.forward(request, response);
-		}
-
-	}
-
-}
 ~~~
+
 </div>
 
 </br>
 
-### 3.3. Service
+### 3.3. 
 
 <summary><b>Service</b></summary>
 <div markdown="1">
 
 ~~~java
 
-@WebServlet("/DashBoard")
-public class DashBoardService implements Command {
-
-	public String execute(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		// 대시보드 보여지게 하는 코드
-		DashBoardDAO dao = new DashBoardDAO();
-
-		List<DashBoardMemberVO> result = dao.temp1();
-		List<DashBoardMemberVO> result1 = dao.temp2();
-		List<DashBoardMemberVO> result2 = dao.temp3();
-		List<DashBoardMemberVO> result3 = dao.temp4();
-		
-		List<DashBoardMemberVO> combinedResult = new ArrayList<>();
-		    combinedResult.addAll(result);
-		    combinedResult.addAll(result1);
-		    combinedResult.addAll(result2);
-		    combinedResult.addAll(result3);
-		    
-		for (DashBoardMemberVO value : result) {
-		}
-		for (DashBoardMemberVO value : result1) {
-		}
-		for (DashBoardMemberVO value : result2) {
-		}
-		for (DashBoardMemberVO value : result3) {
-		}
-		// 조회된 결과를 JSON으로 변환하여 클라이언트에게 응답
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-
-		PrintWriter out = response.getWriter();
-	    Gson gson = new Gson();
-	    String jsonResult = gson.toJson(combinedResult);
-	    out.print(jsonResult);
-
-		return null; // 뷰 이름을 반환하지 않음
-	
-	}
-
-}
 ~~~
+
 </div>
 
 </br>
 
-### 3.4. Chart
+### 3.4. 모델 예측결과
 
-#### 1. Bar-Chart : 연령별 단속 현황
+![image](https://github.com/Limmaji/hyeji/assets/118683437/f6589a48-3790-4108-b18f-69fe09192595)
+![image](https://github.com/Limmaji/hyeji/assets/118683437/fe1e80e3-3cfc-4ea0-8442-3b63a3421a4a)
+
 
         
 <b>dashboard1.min.js</b>
