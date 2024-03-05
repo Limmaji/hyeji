@@ -403,7 +403,7 @@ $(function() {
 
 
 <a href="https://github.com/KIMGUUNI/A_EyeF/">
-        <img src="https://github.com/Limmaji/hyeji/assets/118683437/dd5ab833-a1d1-4136-8821-d3df838b5cd2" width = "100%">
+        <img src="https://github.com/Limmaji/hyeji/assets/118683437/dd5ab833-a1d1-4136-8821-d3df838b5cd2" width = "80%">
  </a>
  
  # 🖥 A-EYE 🖥
@@ -412,6 +412,8 @@ $(function() {
 >
 > #### AI 기반 CCTV 분석을 통한 맞춤 광고 재공 서비스
 >
+> #### 수상 : 우수상
+> 
 > #### 역할 : Modeling
 >
 > #### 기간 : 2024년 02월 01일 ~ 02월 27일 (27일 소요)
@@ -453,19 +455,27 @@ $(function() {
 </br>
 
 
-### 3.1. 
+### 3.1. 데이터 수집
 
->  #### 
->  #### 
->  #### 
+> #### [AI-hub 안면 인식 에이징 데이터](https://www.aihub.or.kr/aihubdata/data/view.do?currMenu=&topMenu=&aihubDataSe=data&dataSetSn=71415)
 > 
+
+> 원천 데이터	
+> - 참여자 1인당 50장의 유아~현재까지의 연령대별 사진
+> - 초상권 사용 동의를 얻는 참여자 안면 제외하고 사진 블러링 처리 (PNG) 50,250장
+
+  </br>
+  
+> 라벨링 데이터
+> - 참여자 출생년도, 현재 나이, 사진 상 나이, 원본 사진 촬영 기기 등의 수집 메타 정보
+> - 얼굴 바운딩박스 및 5점 키포인트 가공 정보 (JSON) 50,250개
 
 
 </br>
 
-### 3.2. 
+### 3.2. 데이터 전처리
 
-<summary><b>Controller</b></summary>
+<summary><b> </b></summary>
 
 <div markdown="1">
 
@@ -477,9 +487,20 @@ $(function() {
 
 </br>
 
-### 3.3. 
+### 3.3. Modeling
 
-<summary><b>Service</b></summary>
+<summary><b>age_model</b></summary>
+<div markdown="1">
+
+~~~java
+
+~~~
+
+</div>
+
+</br>
+
+<summary><b>gender_model</b></summary>
 <div markdown="1">
 
 ~~~java
