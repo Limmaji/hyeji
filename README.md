@@ -408,11 +408,11 @@ $(function() {
  
  # 🖥 A-EYE 🖥
 
+> #### 🏆 수상 : 우수상
+> 
 > ### Team name : A_eye
->
+> 
 > #### AI 기반 CCTV 분석을 통한 맞춤 광고 재공 서비스
->
-> #### 수상 : 우수상
 > 
 > #### 역할 : Modeling
 >
@@ -458,24 +458,61 @@ $(function() {
 ### 3.1. 데이터 수집
 
 > #### [AI-hub 안면 인식 에이징 데이터](https://www.aihub.or.kr/aihubdata/data/view.do?currMenu=&topMenu=&aihubDataSe=data&dataSetSn=71415)
-> 
+
+  </br>
 
 > 원천 데이터	
 > - 참여자 1인당 50장의 유아~현재까지의 연령대별 사진
 > - 초상권 사용 동의를 얻는 참여자 안면 제외하고 사진 블러링 처리 (PNG) 50,250장
 
-  </br>
+</br>
   
 > 라벨링 데이터
 > - 참여자 출생년도, 현재 나이, 사진 상 나이, 원본 사진 촬영 기기 등의 수집 메타 정보
 > - 얼굴 바운딩박스 및 5점 키포인트 가공 정보 (JSON) 50,250개
 
+</br>
 
+<table>
+  <tr>
+    <td align="center">남자</td>
+    <td align="center">여자</td>
+  </tr>
+  <tr>
+    <td align="center"><strong>44.6%</strong></td>
+    <td align="center"><strong>55.4%</strong></td>
+  </tr>
+  <tr>
+    <td align="center"><b>22,400건</b></td>
+    <td align="center"><b>27,850건</b></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center">20~35세</td>
+    <td align="center">36~49세</td>
+    <td align="center">50세 이상</td>
+  </tr>
+  <tr>
+    <td align="center"><strong>41.6%</strong></td>
+    <td align="center"><strong>35.7%</strong></td>
+    <td align="center"><strong>22.7%</strong></td>
+  </tr>
+  <tr>
+    <td align="center"><b>20,900건</b></td>
+    <td align="center"><b>17,950건</b></td>
+    <td align="center"><b>11,400건</b></td>
+  </tr>
+</table>
 </br>
 
 ### 3.2. 데이터 전처리
 
-<summary><b> </b></summary>
+- feature
+  - age_past : 촬영 당시 나이
+  - gender : 성별
+  - 
 
 <div markdown="1">
 
