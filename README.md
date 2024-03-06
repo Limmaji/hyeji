@@ -49,12 +49,16 @@
  - 나이 예측 모델 구현
  - 성별 예측 모델 구현
  - 로그아웃 기능 구현
+ - 모델 연결
+ - Queue 전송
 
 </br>
 </br>
 
 
-### 3.1. 데이터 수집
+## 4. 데이터 수집 및 전처리
+
+### 4.1. 데이터 수집
 
 > #### [AI-hub 안면 인식 에이징 데이터](https://www.aihub.or.kr/aihubdata/data/view.do?currMenu=&topMenu=&aihubDataSe=data&dataSetSn=71415)
 >
@@ -68,7 +72,7 @@
 
 </br>
 
-#### 데이터 분포
+- #### 데이터 분포
 
 <table>
   <tr>
@@ -107,7 +111,7 @@
 
 
 
-### 3.2. 데이터 전처리
+### 4.2. 데이터 전처리
 
 ![image](https://github.com/Limmaji/hyeji/assets/118683437/81acfc4f-affb-498e-8aa2-594da258fdf3)
 
@@ -121,12 +125,12 @@
   </br>
   </br>
 
-#### 3.2.1. 압축 풀기
+#### 4.2.1. 압축 풀기
 
 <details>
 <summary><b>코드 보기</b></summary>
 
-~~~java
+~~~python
 
 # 이미지 폴더
 import zipfile
@@ -153,7 +157,7 @@ for zip_file_name in os.listdir(zip_folder_path):
 
 ~~~
 
-~~~java
+~~~python
 
 # 라벨링 폴더
 import zipfile
@@ -184,7 +188,7 @@ for zip_file_name in os.listdir(zip_folder_path):
 </br>
 
 
-#### 3.2.2. 라벨링 데이터 특성 추출
+#### 4.2.2. 라벨링 데이터 특성 추출
   - age_past
   - imgsize
   - width
@@ -203,7 +207,7 @@ for zip_file_name in os.listdir(zip_folder_path):
 <details>
 <summary><b>코드 보기</b></summary>
 
-~~~java
+~~~python
 
 # 가져올 데이터의 폴더 경로
 image_folder = './data/Training/image_1/'
@@ -211,7 +215,7 @@ label_folder = './data/Training/label_1/'
 
 ~~~
 
-~~~java
+~~~python
 
 def create_dataframe(image_folder, label_folder):
 
@@ -286,14 +290,14 @@ image_paths = df['image_path'].values
 
 </br>
 
-#### 3.2.3. 이미지에서 얼굴 영역만 추출
+#### 4.2.3. 이미지에서 얼굴 영역만 추출
 
 - 배열로 저장
 
 <details>
 <summary><b>코드 보기</b></summary>
 
-~~~java
+~~~python
 
 # 이미지 자르는 함수 만들어주기
 def crop_image(image, x, y, w, h):
@@ -308,7 +312,7 @@ cropped_images = []
 
 ~~~
 
-~~~java
+~~~python
 
 # 이미지 자르는 함수 사용하기
 for index, row in df.iterrows():
@@ -355,7 +359,7 @@ images = np.array(images)
 
 </br>
 
-#### 3.2.4. 나이 데이터 범주화
+#### 4.2.4. 나이 데이터 범주화
 
 - 원 핫 인코딩 진행
 - 0~1 값으로 정규화 진행 
@@ -363,7 +367,7 @@ images = np.array(images)
 <details>
 <summary><b>코드 보기</b></summary>
 
-~~~java
+~~~python
 
 # 나이 인코딩
 ages_dm = pd.get_dummies(df['age_past'])
@@ -384,7 +388,7 @@ y_g= genders_dm
 
 </br>
 
-### 3.3. 전처리 후 데이터 분포
+### 4.3. 전처리 후 데이터 분포
 
 - 50,250개 => 25,125개
   
@@ -392,13 +396,13 @@ y_g= genders_dm
 
 </br>
 
-### 3.4. Modeling
+### 5. Modeling
 
 - age_model
 <details>
 <summary><b>코드 보기</b></summary>
 
-~~~java
+~~~python
 
 # model 구축을 위한 라이브러리 import
 from tensorflow.keras.models import Model, Sequential, load_model
@@ -419,7 +423,7 @@ X_train, X_test, y_train_a, y_test_a, y_train_g, y_test_g = train_test_split(
 
 ~~~
 
-~~~java
+~~~python
 
 # age_model 학습 설정값
 init_lr = 0.0001
@@ -435,7 +439,7 @@ callbacks = [EarlyStopping(monitor='val_accuracy',
 
 ~~~
 
-~~~java
+~~~python
 
 # age_model 모델 만들기
 
@@ -480,7 +484,7 @@ cnn_model.fit(X_train, y_train_a, validation_split=0.30, batch_size=32, epochs=1
 <details>
 <summary><b>코드 보기</b></summary>
 	
-~~~java
+~~~python
 
 # gender_model 학습 설정값
 init_lr = 0.0001
@@ -496,7 +500,7 @@ callbacks = [EarlyStopping(monitor='val_accuracy',
 
 ~~~
 
-~~~java
+~~~python
 
 # gender 모델
 from keras.models import Sequential
@@ -541,14 +545,179 @@ cnn_model1.fit(X_train, y_train_g,validation_split=0.3, batch_size = 32, epochs=
 
 
 
-### 3.5. 모델 예측결과
+### 5.5. 모델 예측결과
 
 ![image](https://github.com/Limmaji/hyeji/assets/118683437/f6589a48-3790-4108-b18f-69fe09192595)
+
+</br>
+
+
+## 6. 모델 연결하기
+
+- dlib 라이브러리를 활용하여 얼굴을 감지
+- 얼굴 감지 시, 나이, 성별 예측 모델 실행
+
+~~~python
+
+import cv2
+import dlib
+import numpy as np
+from keras.models import load_model
+from keras.preprocessing.image import img_to_array
+from keras.applications.mobilenet_v2 import preprocess_input
+from google.colab.patches import cv2_imshow
+# from ultralytics import YOLO
+
+# dlib 초기화
+detector = dlib.get_frontal_face_detector()
+
+# 얼굴 검출 모델 로드
+# face_model = YOLO("./model/yolov8m-face_0/yolov8m-face.pt")  # 얼굴 검출 모델 로드
+
+# 나이 및 성별 예측 모델 로드
+age_model = load_model('./model/model1048_05_0.481.hdf5')  # 나이 모델 로드
+gender_model = load_model('./model/model2_02_0.854.hdf5')  # 성별 모델 로드
+
+def preprocess_image(image):
+    # 모델이 기대하는 입력 형상으로 이미지 전처리
+    image = cv2.resize(image, (224, 224))
+    image = img_to_array(image)
+    image = preprocess_input(image)
+    image = np.expand_dims(image, axis=0)
+    return image
+
+# 함수 정의
+def predict_age(model, input_image):
+    # 예측을 위해 이미지를 적절한 형식으로 전처리
+    input_image = preprocess_image(input_image)
+
+    # 모델에 이미지 전달하여 예측 수행
+    age_prediction = model.predict(input_image)
+
+    # 예측 결과 반환
+    return age_prediction
+
+def predict_gender(model, input_image):
+    # 예측을 위해 이미지를 적절한 형식으로 전처리
+    input_image = preprocess_image(input_image)
+
+    # 모델에 이미지 전달하여 예측 수행
+    gender_prediction = model.predict(input_image)
+
+    # 예측 결과 반환
+    return gender_prediction
+
+# 카메라 열기 
+cap = cv2.VideoCapture('./cctv2.mp4') 
+
+while True:
+    ret, frame = cap.read()
+
+    # 얼굴 감지
+    faces = detector(frame)
+
+    for face in faces:
+        x, y, w, h = (face.left(), face.top(), face.width(), face.height())
+
+        # 추출된 얼굴 영역
+        face_image = frame[y:y+h, x:x+w]
+
+        # 나이 예측
+        age_predictions = predict_age(age_model, face_image)
+        predicted_age_index = np.argmax(age_predictions)
+        predicted_age = predicted_age_index * 10 + 10  # 인덱스를 나이로 변환
+        age_accuracy = np.max(age_predictions)  # 나이 예측 정확도
+
+        # 성별 예측
+        gender_predictions = predict_gender(gender_model, face_image)
+        predicted_gender_index = np.argmax(gender_predictions)
+
+        gender_accuracy = np.max(gender_predictions)  # 성별 예측 정확도
+
+        # 얼굴에 박스 그리기
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        # 나이 및 성별 출력
+        predicted_gender = 'f' if predicted_gender_index == 0 else 'm'
+        text = f"age: {predicted_age}, gender: {predicted_gender}, acc: {age_accuracy * 100:.2f}% / {gender_accuracy * 100:.2f}%"
+        cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+    # 화면에 표시
+    cv2_imshow(frame)
+
+    # 종료 키: 'q'
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# 작업 완료 후 해제
+cap.release()
+cv2.destroyAllWindows()
+
+~~~
+
+- 실행결과
+   
 ![image](https://github.com/Limmaji/hyeji/assets/118683437/fe1e80e3-3cfc-4ea0-8442-3b63a3421a4a)
 
+</br>
+
+## 7. Queue 전송
+
+- SQS Message Body에 예측 값을 담아 전송해주기
+
+~~~python
+
+import boto3
+import json
+import uuid
+import cv2
+import numpy as np
+from keras.models import load_model
+from keras.preprocessing.image import img_to_array
+from keras.applications.mobilenet_v2 import preprocess_input
+from IPython.display import display, Image
+import mediapipe as mp
+from ultralytics import YOLO
+import time
 
 
-## 4. 회고 / 느낀점
+# AWS 계정 및 리전 설정
+aws_access_key_id = 'aws_access_key_id'
+aws_secret_access_key = 'aws_secret_access_key'
+aws_region = 'ap-northeast-2'
+
+# SQS 대기열 URL
+sqs_queue_url = 'https://sqs.ap-northeast-2.amazonaws.com/851725308174/v2q.fifo'
+# Boto3 SQS 클라이언트 생성
+sqs = boto3.client('sqs', region_name=aws_region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
+unique_id = str(uuid.uuid4())
+
+# 큐에 메시지 보내는 함수
+def send_message_to_sqs(added_value):
+    try:
+        
+        added_value['age'] = str(added_value['age'])
+        response = sqs.send_message(
+        QueueUrl=sqs_queue_url,
+        MessageBody=json.dumps(added_value),
+        MessageGroupId=unique_id,
+        MessageDeduplicationId=unique_id
+        )
+        print(f"Message sent to SQS: {response['MessageId']}")
+    except Exception as e:
+        print(f"Error sending message to SQS: {e}")
+
+
+~~~
+
+
+~~~python
+
+
+
+~~~
+
+## 8. 회고 / 느낀점
 
 
 </br>
