@@ -664,6 +664,14 @@ cv2.destroyAllWindows()
 ## 7. Queue 전송
 
 - SQS Message Body에 예측 값을 담아 전송해주기
+- 중복 피하기하기 위한 로직 구현
+- 우선순위 부여
+
+> 한번 전송된 객체는 우선순위에서 제외 되어야 한다. </br>
+> 인식된 객체들의 값을 우선순서대로 크기가 15인 배열A에 저장한다. </br>
+> 가장 첫번째 값을 전송하고 전송된 값은 크기가 3인 배열B에 저장한다. </br>
+> 새롭게 객체가 인식되고 배열에 저장되었을때, 배열B와 값을 비교하여 다른 값을 가질 때, 값을 전송하고 배열B에 넣어준다. </br>
+> 만약 배열A에 배열B와 다른 값을 가지는 값이 없을 때, 배열B를 초기화 하고, 배열A의 첫번째 값을 보내준 후 배열B에 저장한다. </br>
 
 ~~~python
 
@@ -676,8 +684,8 @@ from keras.models import load_model
 from keras.preprocessing.image import img_to_array
 from keras.applications.mobilenet_v2 import preprocess_input
 from IPython.display import display, Image
-import mediapipe as mp
-from ultralytics import YOLO
+from imutils import face_utils
+import dlib
 import time
 
 
@@ -695,36 +703,165 @@ unique_id = str(uuid.uuid4())
 # 큐에 메시지 보내는 함수
 def send_message_to_sqs(added_value):
     try:
-        
         added_value['age'] = str(added_value['age'])
         response = sqs.send_message(
-        QueueUrl=sqs_queue_url,
-        MessageBody=json.dumps(added_value),
-        MessageGroupId=unique_id,
-        MessageDeduplicationId=unique_id
+            QueueUrl=sqs_queue_url,
+            MessageBody=json.dumps(added_value),
+            MessageGroupId=unique_id,
+            MessageDeduplicationId=unique_id
         )
         print(f"Message sent to SQS: {response['MessageId']}")
     except Exception as e:
         print(f"Error sending message to SQS: {e}")
 
+# 모델 로드
+age_model = load_model('model1048_05_0.481.hdf5')
+gender_model = load_model('model2_02_0.854.hdf5')
+
+# 이미지 전처리
+def preprocess_image(image):
+    image = cv2.resize(image, (224, 224))
+    image = img_to_array(image)
+    image = preprocess_input(image)
+    image = np.expand_dims(image, axis=0)
+    return image
+
+# 나이 예측 모델
+def predict_age(model, input_image):
+    input_image = preprocess_image(input_image)
+    age_prediction = model.predict(input_image)
+    return age_prediction
+
+# 성별 예측 모델
+def predict_gender(model, input_image):
+    input_image = preprocess_image(input_image)
+    gender_prediction = model.predict(input_image)
+    return gender_prediction
+
+# dlib 얼굴 검출기 초기화
+detector = dlib.get_frontal_face_detector()
+
+
+
+detected_objects = []  # 얼굴에서 감지된 객체 정보를 저장할 배열
+
+
+# 웹캠 열기
+cap = cv2.VideoCapture('cctv2.mp4')  # 0은 일반적으로 기본 웹캠을 나타냄
+
+
+# 우선 순위 지정
+priority = {
+    ('f', 20): 1,
+    ('f', 30): 2,
+    ('m', 20): 3,
+    ('f', 40): 4,
+    ('m', 10): 5,
+    ('f', 10): 6,
+    ('m', 30): 7,
+    ('f', 50): 8,
+    ('m', 40): 9,
+    ('m', 50): 10
+}
+
+# 성별, 나이, 눈맞춤 함수 실행 주기 설정
+age_gender_execution_interval = 10  # 10초에 한 번씩 실행
+last_age_gender_execution_time = time.time()
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        # 프레임을 정상적으로 읽지 못한 경우, 계속 다음 프레임으로 진행
+        continue
+    
+    detected_objects = []
+    queue_arr = []
+    
+    # dlib을 사용하여 얼굴 검출
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = detector(gray, 0)
+
+    for face in faces:
+        x, y, w, h = face.left(), face.top(), face.width(), face.height()
+        face_image = frame[y:y+h, x:x+w]
+
+        
+        # 10초마다 성별, 나이 예측 함수 실행
+        current_age_gender_time = time.time()
+        if current_age_gender_time - last_age_gender_execution_time >= age_gender_execution_interval:
+            age_predictions = predict_age(age_model, face_image)
+            predicted_age_index = np.argmax(age_predictions)
+            predicted_age = int(predicted_age_index * 10 + 10)
+            age_accuracy = np.max(age_predictions)
+
+            gender_predictions = predict_gender(gender_model, face_image)
+            predicted_gender_index = np.argmax(gender_predictions)
+            gender_accuracy = np.max(gender_predictions)
+            predicted_gender = 'f' if predicted_gender_index == 0 else 'm'
+            detected_objects.append({'gender': predicted_gender, 'age': predicted_age})
+            
+            print("인식된 객체",detected_objects)
+            print("Executing age and gender prediction - Age: {}, Gender: {}".format(predicted_age, 'f' if predicted_gender_index == 0 else 'm'))
+            
+            last_age_gender_execution_time = current_age_gender_time
+
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+            text = f"age: {predicted_age}, gender: {predicted_gender}, acc: {age_accuracy * 100:.2f}% / {gender_accuracy * 100:.2f}%"
+            cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+            # 우선 순위 대로 정렬 시킴
+            detected_objects = sorted(detected_objects, key=lambda x: priority.get((x['gender'], x['age']), float('inf')))
+            print("우선순위 정렬된 객체:", detected_objects)
+            
+            if detected_objects:
+                added_value = detected_objects[0]
+                # 대기열 만들어 주는 코드
+                if not queue_arr:
+                    if added_value:
+                        queue_arr.append(added_value)
+                        # added_value를 SQS에 전송
+                        print('대기열 추가:', queue_arr)
+                else:
+                    found_unique = False
+                    for obj in detected_objects:
+                        if obj not in queue_arr:
+                            queue_arr.append(obj)
+                            added_value=obj
+                            found_unique = True
+                            # added_value를 SQS에 전송
+                            print('대기열 추가:', added_value)
+                            break  
+
+                    if not found_unique:
+                        # 다른 값을 발견하지 못하면 queue_arr 초기화
+                        queue_arr = []
+                        if added_value:
+                            queue_arr.append(added_value)
+                            # added_value를 SQS에 전송
+                            print('대기열 추가:', added_value)
+
+    # SQS에 전송할 데이터 선택 (최우선 순위)
+    if queue_arr:
+        
+        print("최종 전송 데이터:", added_value)
+        send_message_to_sqs(added_value)
+    else:
+        print("인식된 객체가 없습니다.")
+
+    # 웹캠 화면 표시
+    cv2.imshow('WebCam', frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# 웹캠 닫기
+cap.release()
+cv2.destroyAllWindows()
+
 
 ~~~
 
-
-~~~python
-
-
-
-~~~
-
-## 8. 회고 / 느낀점
-
-
-</br>
-
->
-> ss
-> ss
 
 </details>
 
