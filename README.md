@@ -1,11 +1,27 @@
+# 성장중인 개발자 임혜지의 포트폴리오입니다.
+- ### 희망 분야 : 인공지능 / java back-end
+- ### 이메일 : cisl159@naver.com
+- ### 깃허브 : https://github.com/Limmaji/Limmaji
+</br>
+
+# 기술 스택
+> ### Back-end
+> Java / JSP / Spring Boot / JPA
+> ### Front-end
+> HTML / CSS / React.js
+> ### DB
+> MySQL / Oracle
+
+</br>
 
 
+# 프로젝트
 
 <a href="https://github.com/KIMGUUNI/A_EyeF/">
         <img src="https://github.com/Limmaji/hyeji/assets/118683437/dd5ab833-a1d1-4136-8821-d3df838b5cd2" width = "80%">
  </a>
  
- # 🖥 A-EYE 🖥
+ ## 🖥 A-EYE 🖥
 
 > #### 🏆 수상 : 우수상
 > 
@@ -53,7 +69,7 @@
  - 로그아웃 기능 구현
  - 모델 연결
  - Queue 전송
-
+[코드보러가기](https://github.com/Limmaji/age_gender_model)
 </br>
 </br>
 
@@ -882,7 +898,7 @@ cv2.destroyAllWindows()
         
  </a>
  
- # 💊 Drug is Death 💊
+ ## 💊 Drug is Death 💊
 
 > ### Team name : 강력 1팀
 >
