@@ -69,7 +69,7 @@
  - 로그아웃 기능 구현
  - 모델 연결
  - Queue 전송
-[코드보러가기](https://github.com/Limmaji/age_gender_model)
+ - [코드보러가기](https://github.com/Limmaji/age_gender_model)
 </br>
 </br>
 
