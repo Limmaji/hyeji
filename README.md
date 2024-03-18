@@ -69,7 +69,11 @@
  - 로그아웃 기능 구현
  - 모델 연결
  - Queue 전송
- - [코드보러가기](https://github.com/Limmaji/age_gender_model)
+
+   </br>
+   
+[코드보러가기](https://github.com/Limmaji/age_gender_model)
+   
 </br>
 </br>
 
@@ -145,64 +149,6 @@
 
 #### 4.2.1. 압축 풀기
 
-<details>
-<summary><b>코드 보기</b></summary>
-
-~~~python
-
-# 이미지 폴더
-import zipfile
-import os
-
-# 압축 파일이 들어 있는 폴더 경로
-zip_folder_path = './data/Training/image'
-
-# 압축을 푼 폴더 경로
-extract_folder = './data/Training/image_1'
-
-# 압축 파일 폴더 내의 모든 파일에 대해 반복
-for zip_file_name in os.listdir(zip_folder_path):
-    # 각 압축 파일의 경로
-    zip_file_path = os.path.join(zip_folder_path, zip_file_name)
-
-    # 압축을 푸는 작업 (위의 코드를 활용)
-    with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-        zip_ref.extractall(extract_folder)
-
-    # 압축 해제된 파일 목록 출력
-    extracted_files = os.listdir(extract_folder)
-    print(f"Extracted Files from {zip_file_name}:", extracted_files)
-
-~~~
-
-~~~python
-
-# 라벨링 폴더
-import zipfile
-import os
-# 압축 파일이 들어 있는 폴더 경로
-zip_folder_path = './data/Training/label'
-
-# 압축을 푼 폴더 경로
-extract_folder = './data/Training/label_1'
-
-# 압축 파일 폴더 내의 모든 파일에 대해 반복
-for zip_file_name in os.listdir(zip_folder_path):
-    # 각 압축 파일의 경로
-    zip_file_path = os.path.join(zip_folder_path, zip_file_name)
-
-    # 압축을 푸는 작업 (위의 코드를 활용)
-    with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-        zip_ref.extractall(extract_folder)
-
-    # 압축 해제된 파일 목록 출력
-    extracted_files = os.listdir(extract_folder)
-    print(f"Extracted Files from {zip_file_name}:", extracted_files)
-
-~~~
-
-</details>
-
 </br>
 
 
@@ -222,158 +168,12 @@ for zip_file_name in os.listdir(zip_folder_path):
 > - 10대 ~ 50대로 범주화
 
 
-<details>
-<summary><b>코드 보기</b></summary>
-
-~~~python
-
-# 가져올 데이터의 폴더 경로
-image_folder = './data/Training/image_1/'
-label_folder = './data/Training/label_1/'
-
-~~~
-
-~~~python
-
-def create_dataframe(image_folder, label_folder):
-
-    # 이미지 폴더 내의 이미지 파일 목록 가져오기
-    image_files = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-
-    # 데이터프레임을 저장할 리스트 생성
-    data = []
-
-    # 이미지 파일과 라벨 정보를 이용하여 데이터프레임에 추가
-    for image_file in image_files:
-
-        # 이미지 파일 경로
-        image_path = os.path.join(image_folder, image_file)
-
-        # 라벨 파일 경로
-        label_file_path = os.path.join(label_folder, image_file.replace('.png', '.json'))  # 파일 확장자에 따라 수정
-
-        # 라벨 파일 읽기
-        if os.path.exists(label_file_path):
-            labels = pd.read_json(label_file_path)
-
-            # 이미지 파일에 대한 라벨 정보
-            if not labels.empty:
-
-                # 데이터프레임에 추가할 각 열의 값
-                age_past = labels.iloc[0]['age_past']
-                width = labels.iloc[0]['width']
-                height = labels.iloc[0]['height']
-                gender = labels.iloc[0]['gender']
-                box_data = labels["annotation"][0]["box"]
-                x, y, w, h = box_data["x"], box_data["y"], box_data["w"], box_data["h"]
-
-                # 데이터프레임에 추가
-                data.append([image_path, age_past, width, height, gender, x, y, w, h])
-
-    # 데이터프레임 생성
-    columns = ['image_path', 'age_past', 'width', 'height', 'gender', 'x', 'y', 'w', 'h']
-    df = pd.DataFrame(data, columns=columns)
-
-    return df
-
-# 이미지 폴더 경로와 라벨 디렉토리 경로 지정
-image_folder_path = './data/Training/image_1/'
-label_folder_path = './data/Training/label_1/'
-
-# 데이터프레임 생성
-df_result = create_dataframe(image_folder_path, label_folder_path)
-
-# 10살 이상만 추출하기
-df_result=df_result[df_result['age_past']>=15]
-
-# 60 미만만 추출하기
-df_result=df_result[df_result['age_past']<60]
-
-# 연령 구간별로 나누기
-df_result['age_past'] = [x//10*10 for x in df_result['age_past']]
-
-# 데이터프레임 저장
-df_result.to_csv('output_dataframe.csv', index=False)
-
-
-# 나이, 성별, 이미지 데이터 추출
-ages = df['age_past'].values
-genders = df['gender'].values
-image_paths = df['image_path'].values
-
-
-~~~
-
-</details>
-
 </br>
 
 #### 4.2.3. 이미지에서 얼굴 영역만 추출
 
 - 배열로 저장
 
-<details>
-<summary><b>코드 보기</b></summary>
-
-~~~python
-
-# 이미지 자르는 함수 만들어주기
-def crop_image(image, x, y, w, h):
-    return image[y:y+h, x:x+w]
-
-# 이미지 데이터를 3D 배열로 변환
-img_size = (224, 224)
-images = []
-
-# cropped_images 리스트 생성
-cropped_images = []
-
-~~~
-
-~~~python
-
-# 이미지 자르는 함수 사용하기
-for index, row in df.iterrows():
-
-    # x, y, w, h 값을 정수로 변환
-    row['x'] = int(row['x'])
-    row['y'] = int(row['y'])
-    row['w'] = int(row['w'])
-    row['h'] = int(row['h'])
-
-    # 이미지 읽기
-    img = cv2.imread(row['image_path'])
-
-    # 이미지가 제대로 읽어졌는지 확인
-    if img is not None:
-
-        # 이미지 크기 확인
-        if img.shape[0] > 0 and img.shape[1] > 0:
-
-            # 이미지를 자르고 리스트에 추가
-            if row['x'] >= 0 and row['y'] >= 0 and row['x'] + row['w'] <= img.shape[1] and row['y'] + row['h'] <= img.shape[0]:
-
-              cropped_img_resized = cv2.resize(crop_image(img, row['x'], row['y'], row['w'], row['h']), img_size)
-
-              # BGR에서 RGB로 변환
-              img_1= cv2.cvtColor(cropped_img_resized, cv2.COLOR_BGR2RGB)
-
-              images.append(img_1)
-
-            else:
-              print(f"Error: Invalid cropping box coordinates for image at index {index}, path: {row['image_path']}")
-        else:
-            print(f"Error: Invalid image size for {row['image_path']}")
-    else:
-        print(f"Error reading image: {row['image_path']}")
-
-# 리스트를 numpy 배열로 변환
-images = np.array(images)
-
-
-~~~
-
-</details>
 
 </br>
 
@@ -382,184 +182,25 @@ images = np.array(images)
 - 원 핫 인코딩 진행
 - 0~1 값으로 정규화 진행 
 
-<details>
-<summary><b>코드 보기</b></summary>
-
-~~~python
-
-# 나이 인코딩
-ages_dm = pd.get_dummies(df['age_past'])
-ages_dm
-
-# 성별 인코딩
-genders_dm = pd.get_dummies(df['gender'])
-genders_dm.head()
-
-
-X= images/255.0    # ---> 정규화
-y_a = ages_dm
-y_g= genders_dm
-
-~~~
-
-</details>
-
 </br>
 
 ### 4.3. 전처리 후 데이터 분포
 
 - 50,250개 => 25,125개
-  
+
+##### train data 분포 예시
 ![image](https://github.com/Limmaji/hyeji/assets/118683437/d5556432-6c40-41ad-a668-d777638e2476)
 
 </br>
 
 ### 5. Modeling
+#### 정확도
+- age_model : 48.1%
 
-- age_model
-<details>
-<summary><b>코드 보기</b></summary>
+- gender_model : 85.4%
 
-~~~python
-
-# model 구축을 위한 라이브러리 import
-from tensorflow.keras.models import Model, Sequential, load_model
-from tensorflow.keras.layers import BatchNormalization, Conv2D, MaxPool2D, Activation, Dropout, Lambda, Dense, Flatten, Input
-import tensorflow as tf
-import tensorflow.keras as keras
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
-from sklearn.model_selection import train_test_split
-from tensorflow.keras import backend as k
-from tensorflow.keras.layers import MaxPooling2D
-import numpy as np
-import pandas as pd
-
-# train_test_split
-X_train, X_test, y_train_a, y_test_a, y_train_g, y_test_g = train_test_split(
-    X, y_a, y_g, test_size=0.2, random_state=42 )
-
-~~~
-
-~~~python
-
-# age_model 학습 설정값
-init_lr = 0.0001
-epochs = 50
-opt = Adam(learning_rate=init_lr) 
-
-# 과적합 방지를 위한 callback 설정
-callbacks = [EarlyStopping(monitor='val_accuracy',
-                                           patience=5),
-             ModelCheckpoint(filepath = 'a_model05_{epoch:02d}_{val_accuracy:.3f}.hdf5',
-                                             monitor='val_accuracy',
-                                             save_best_only=True)]
-
-~~~
-
-~~~python
-
-# age_model 모델 만들기
-
-cnn_model = Sequential()
-
-# 특성 추출부(Convolutional)
-cnn_model.add(Conv2D(filters=32, kernel_size=(3, 3), input_shape=X_train[0].shape, padding='same', activation='relu'))
-cnn_model.add(MaxPooling2D(pool_size=(2, 2)))
-cnn_model.add(Dropout(0.25))
-
-cnn_model.add(Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu'))
-cnn_model.add(MaxPooling2D(pool_size=(2, 2)))
-cnn_model.add(Dropout(0.25))
-
-cnn_model.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))
-cnn_model.add(MaxPooling2D(pool_size=(2, 2)))
-cnn_model.add(Dropout(0.25))
-
-# 분류부 (전결합층, mlp)
-cnn_model.add(Flatten())
-cnn_model.add(Dense(units=512, activation='relu'))
-cnn_model.add(Dropout(0.5))
-
-# 출력층 (다중 클래스 분류)
-num_classes = 5  # 클래스 수에 맞게 설정
-cnn_model.add(Dense(units=num_classes, activation='softmax'))
-
-# 컴파일 설정
-cnn_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-cnn_model.fit(X_train, y_train_a, validation_split=0.30, batch_size=32, epochs=1000, callbacks=callbacks)
-
-~~~
-
-
-</details>
 
 </br>
-
-- gender_model
-
-<details>
-<summary><b>코드 보기</b></summary>
-	
-~~~python
-
-# gender_model 학습 설정값
-init_lr = 0.0001
-epochs = 50
-opt = Adam(learning_rate=init_lr)  # 'lr'를 'learning_rate'로 변경
-
-# 과적합 방지를 위한 callback 설정
-callbacks = [EarlyStopping(monitor='val_accuracy',
-                                           patience=5),
-             ModelCheckpoint(filepath = 'g_model05_{epoch:02d}_{val_accuracy:.3f}.hdf5',
-                                             monitor='val_accuracy',
-                                             save_best_only=True)]
-
-~~~
-
-~~~python
-
-# gender 모델
-from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense
-
-# 모델 정의
-cnn_model1 = Sequential()
-
-# 특성 추출부(Convolutional)
-cnn_model1.add(Conv2D(filters=32, kernel_size=(3, 3), input_shape=X[0].shape, padding='same', activation='relu'))
-cnn_model1.add(MaxPooling2D(pool_size=(2, 2)))
-cnn_model1.add(Dropout(0.25))
-
-cnn_model1.add(Conv2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu'))
-cnn_model1.add(MaxPooling2D(pool_size=(2, 2)))
-cnn_model1.add(Dropout(0.25))
-
-cnn_model1.add(Conv2D(filters=128, kernel_size=(3, 3), padding='same', activation='relu'))
-cnn_model1.add(MaxPooling2D(pool_size=(2, 2)))
-cnn_model1.add(Dropout(0.25))
-
-# 분류부 (전결합층, mlp)
-cnn_model1.add(Flatten())
-cnn_model1.add(Dense(units=512, activation='relu'))
-cnn_model1.add(Dropout(0.5))
-
-# 출력층
-num_classes = 2
-cnn_model1.add(Dense(units=num_classes, activation='sigmoid'))
-
-# 컴파일 설정
-cnn_model1.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-cnn_model1.fit(X_train, y_train_g,validation_split=0.3, batch_size = 32, epochs=1000, callbacks = callbac
-
-~~~
-
-</details>
-
-</br>
-
 
 
 
@@ -575,103 +216,7 @@ cnn_model1.fit(X_train, y_train_g,validation_split=0.3, batch_size = 32, epochs=
 - dlib 라이브러리를 활용하여 얼굴을 감지
 - 얼굴 감지 시, 나이, 성별 예측 모델 실행
 
-~~~python
 
-import cv2
-import dlib
-import numpy as np
-from keras.models import load_model
-from keras.preprocessing.image import img_to_array
-from keras.applications.mobilenet_v2 import preprocess_input
-from google.colab.patches import cv2_imshow
-# from ultralytics import YOLO
-
-# dlib 초기화
-detector = dlib.get_frontal_face_detector()
-
-# 얼굴 검출 모델 로드
-# face_model = YOLO("./model/yolov8m-face_0/yolov8m-face.pt")  # 얼굴 검출 모델 로드
-
-# 나이 및 성별 예측 모델 로드
-age_model = load_model('./model/model1048_05_0.481.hdf5')  # 나이 모델 로드
-gender_model = load_model('./model/model2_02_0.854.hdf5')  # 성별 모델 로드
-
-def preprocess_image(image):
-    # 모델이 기대하는 입력 형상으로 이미지 전처리
-    image = cv2.resize(image, (224, 224))
-    image = img_to_array(image)
-    image = preprocess_input(image)
-    image = np.expand_dims(image, axis=0)
-    return image
-
-# 함수 정의
-def predict_age(model, input_image):
-    # 예측을 위해 이미지를 적절한 형식으로 전처리
-    input_image = preprocess_image(input_image)
-
-    # 모델에 이미지 전달하여 예측 수행
-    age_prediction = model.predict(input_image)
-
-    # 예측 결과 반환
-    return age_prediction
-
-def predict_gender(model, input_image):
-    # 예측을 위해 이미지를 적절한 형식으로 전처리
-    input_image = preprocess_image(input_image)
-
-    # 모델에 이미지 전달하여 예측 수행
-    gender_prediction = model.predict(input_image)
-
-    # 예측 결과 반환
-    return gender_prediction
-
-# 카메라 열기 
-cap = cv2.VideoCapture('./cctv2.mp4') 
-
-while True:
-    ret, frame = cap.read()
-
-    # 얼굴 감지
-    faces = detector(frame)
-
-    for face in faces:
-        x, y, w, h = (face.left(), face.top(), face.width(), face.height())
-
-        # 추출된 얼굴 영역
-        face_image = frame[y:y+h, x:x+w]
-
-        # 나이 예측
-        age_predictions = predict_age(age_model, face_image)
-        predicted_age_index = np.argmax(age_predictions)
-        predicted_age = predicted_age_index * 10 + 10  # 인덱스를 나이로 변환
-        age_accuracy = np.max(age_predictions)  # 나이 예측 정확도
-
-        # 성별 예측
-        gender_predictions = predict_gender(gender_model, face_image)
-        predicted_gender_index = np.argmax(gender_predictions)
-
-        gender_accuracy = np.max(gender_predictions)  # 성별 예측 정확도
-
-        # 얼굴에 박스 그리기
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-        # 나이 및 성별 출력
-        predicted_gender = 'f' if predicted_gender_index == 0 else 'm'
-        text = f"age: {predicted_age}, gender: {predicted_gender}, acc: {age_accuracy * 100:.2f}% / {gender_accuracy * 100:.2f}%"
-        cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-
-    # 화면에 표시
-    cv2_imshow(frame)
-
-    # 종료 키: 'q'
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# 작업 완료 후 해제
-cap.release()
-cv2.destroyAllWindows()
-
-~~~
 
 - 실행결과
    
@@ -691,198 +236,8 @@ cv2.destroyAllWindows()
 > - 새롭게 객체가 인식되고 배열에 저장되었을때, 배열B와 값을 비교하여 다른 값을 가질 때, 값을 전송하고 배열B에 넣어준다. </br>
 > - 만약 배열A에 배열B와 다른 값을 가지는 값이 없을 때, 배열B를 초기화 하고, 배열A의 첫번째 값을 보내준 후 배열B에 저장한다. </br>
 
-~~~python
 
-import boto3
-import json
-import uuid
-import cv2
-import numpy as np
-from keras.models import load_model
-from keras.preprocessing.image import img_to_array
-from keras.applications.mobilenet_v2 import preprocess_input
-from IPython.display import display, Image
-from imutils import face_utils
-import dlib
-import time
-
-
-# AWS 계정 및 리전 설정
-aws_access_key_id = 'aws_access_key_id'
-aws_secret_access_key = 'aws_secret_access_key'
-aws_region = 'ap-northeast-2'
-
-# SQS 대기열 URL
-sqs_queue_url = 'https://sqs.ap-northeast-2.amazonaws.com/851725308174/v2q.fifo'
-# Boto3 SQS 클라이언트 생성
-sqs = boto3.client('sqs', region_name=aws_region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
-unique_id = str(uuid.uuid4())
-
-# 큐에 메시지 보내는 함수
-def send_message_to_sqs(added_value):
-    try:
-        added_value['age'] = str(added_value['age'])
-        response = sqs.send_message(
-            QueueUrl=sqs_queue_url,
-            MessageBody=json.dumps(added_value),
-            MessageGroupId=unique_id,
-            MessageDeduplicationId=unique_id
-        )
-        print(f"Message sent to SQS: {response['MessageId']}")
-    except Exception as e:
-        print(f"Error sending message to SQS: {e}")
-
-# 모델 로드
-age_model = load_model('model1048_05_0.481.hdf5')
-gender_model = load_model('model2_02_0.854.hdf5')
-
-# 이미지 전처리
-def preprocess_image(image):
-    image = cv2.resize(image, (224, 224))
-    image = img_to_array(image)
-    image = preprocess_input(image)
-    image = np.expand_dims(image, axis=0)
-    return image
-
-# 나이 예측 모델
-def predict_age(model, input_image):
-    input_image = preprocess_image(input_image)
-    age_prediction = model.predict(input_image)
-    return age_prediction
-
-# 성별 예측 모델
-def predict_gender(model, input_image):
-    input_image = preprocess_image(input_image)
-    gender_prediction = model.predict(input_image)
-    return gender_prediction
-
-# dlib 얼굴 검출기 초기화
-detector = dlib.get_frontal_face_detector()
-
-
-
-detected_objects = []  # 얼굴에서 감지된 객체 정보를 저장할 배열
-
-
-# 웹캠 열기
-cap = cv2.VideoCapture('cctv2.mp4')  # 0은 일반적으로 기본 웹캠을 나타냄
-
-
-# 우선 순위 지정
-priority = {
-    ('f', 20): 1,
-    ('f', 30): 2,
-    ('m', 20): 3,
-    ('f', 40): 4,
-    ('m', 10): 5,
-    ('f', 10): 6,
-    ('m', 30): 7,
-    ('f', 50): 8,
-    ('m', 40): 9,
-    ('m', 50): 10
-}
-
-# 성별, 나이, 눈맞춤 함수 실행 주기 설정
-age_gender_execution_interval = 10  # 10초에 한 번씩 실행
-last_age_gender_execution_time = time.time()
-
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        # 프레임을 정상적으로 읽지 못한 경우, 계속 다음 프레임으로 진행
-        continue
-    
-    detected_objects = []
-    queue_arr = []
-    
-    # dlib을 사용하여 얼굴 검출
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = detector(gray, 0)
-
-    for face in faces:
-        x, y, w, h = face.left(), face.top(), face.width(), face.height()
-        face_image = frame[y:y+h, x:x+w]
-
-        
-        # 10초마다 성별, 나이 예측 함수 실행
-        current_age_gender_time = time.time()
-        if current_age_gender_time - last_age_gender_execution_time >= age_gender_execution_interval:
-            age_predictions = predict_age(age_model, face_image)
-            predicted_age_index = np.argmax(age_predictions)
-            predicted_age = int(predicted_age_index * 10 + 10)
-            age_accuracy = np.max(age_predictions)
-
-            gender_predictions = predict_gender(gender_model, face_image)
-            predicted_gender_index = np.argmax(gender_predictions)
-            gender_accuracy = np.max(gender_predictions)
-            predicted_gender = 'f' if predicted_gender_index == 0 else 'm'
-            detected_objects.append({'gender': predicted_gender, 'age': predicted_age})
-            
-            print("인식된 객체",detected_objects)
-            print("Executing age and gender prediction - Age: {}, Gender: {}".format(predicted_age, 'f' if predicted_gender_index == 0 else 'm'))
-            
-            last_age_gender_execution_time = current_age_gender_time
-
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-            text = f"age: {predicted_age}, gender: {predicted_gender}, acc: {age_accuracy * 100:.2f}% / {gender_accuracy * 100:.2f}%"
-            cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-
-            # 우선 순위 대로 정렬 시킴
-            detected_objects = sorted(detected_objects, key=lambda x: priority.get((x['gender'], x['age']), float('inf')))
-            print("우선순위 정렬된 객체:", detected_objects)
-            
-            if detected_objects:
-                added_value = detected_objects[0]
-                # 대기열 만들어 주는 코드
-                if not queue_arr:
-                    if added_value:
-                        queue_arr.append(added_value)
-                        # added_value를 SQS에 전송
-                        print('대기열 추가:', queue_arr)
-                else:
-                    found_unique = False
-                    for obj in detected_objects:
-                        if obj not in queue_arr:
-                            queue_arr.append(obj)
-                            added_value=obj
-                            found_unique = True
-                            # added_value를 SQS에 전송
-                            print('대기열 추가:', added_value)
-                            break  
-
-                    if not found_unique:
-                        # 다른 값을 발견하지 못하면 queue_arr 초기화
-                        queue_arr = []
-                        if added_value:
-                            queue_arr.append(added_value)
-                            # added_value를 SQS에 전송
-                            print('대기열 추가:', added_value)
-
-    # SQS에 전송할 데이터 선택 (최우선 순위)
-    if queue_arr:
-        
-        print("최종 전송 데이터:", added_value)
-        send_message_to_sqs(added_value)
-    else:
-        print("인식된 객체가 없습니다.")
-
-    # 웹캠 화면 표시
-    cv2.imshow('WebCam', frame)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# 웹캠 닫기
-cap.release()
-cv2.destroyAllWindows()
-
-
-~~~
-
-
-</details>
-
+ </details>
 
 
 </br>
@@ -961,123 +316,16 @@ cv2.destroyAllWindows()
 
 </br>
 
-### 3.2. Controller
 
-<summary><b>Controller</b></summary>
-
-<div markdown="1">
-
-~~~java
-@WebServlet("*.do")
-public class FrontController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-
-	private HashMap<String, Command> map = null;
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		map = new HashMap<String, Command>();
-		
-		map.put("DashBoard.do", new DashBoardService());
-	}
-
-	protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		request.setCharacterEncoding("UTF-8");
-
-		String uri = request.getRequestURI();
-
-		String cp = request.getContextPath();
-
-		String finaluri = uri.substring(cp.length() + 1);
-
-		String path = null;
-		Command com = null;
-		if (finaluri.contains("Go")) {
-			path = finaluri.substring(2).replaceAll(".do", "");
-		} else {
-			com = map.get(finaluri);
-			path = com.execute(request, response);
-		}
-		// 3. 페이지 이동
-		if (path == null) {
-		} else if (path.contains("redirect:/")) {
-			response.sendRedirect(path.substring(10));
-		} else {
-			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/" + path + ".jsp");
-			rd.forward(request, response);
-		}
-
-	}
-
-}
-~~~
-</div>
-
-</br>
-
-### 3.3. Service
-
-<summary><b>Service</b></summary>
-<div markdown="1">
-
-~~~java
-
-@WebServlet("/DashBoard")
-public class DashBoardService implements Command {
-
-	public String execute(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		// 대시보드 보여지게 하는 코드
-		DashBoardDAO dao = new DashBoardDAO();
-
-		List<DashBoardMemberVO> result = dao.temp1();
-		List<DashBoardMemberVO> result1 = dao.temp2();
-		List<DashBoardMemberVO> result2 = dao.temp3();
-		List<DashBoardMemberVO> result3 = dao.temp4();
-		
-		List<DashBoardMemberVO> combinedResult = new ArrayList<>();
-		    combinedResult.addAll(result);
-		    combinedResult.addAll(result1);
-		    combinedResult.addAll(result2);
-		    combinedResult.addAll(result3);
-		    
-		for (DashBoardMemberVO value : result) {
-		}
-		for (DashBoardMemberVO value : result1) {
-		}
-		for (DashBoardMemberVO value : result2) {
-		}
-		for (DashBoardMemberVO value : result3) {
-		}
-		// 조회된 결과를 JSON으로 변환하여 클라이언트에게 응답
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-
-		PrintWriter out = response.getWriter();
-	    Gson gson = new Gson();
-	    String jsonResult = gson.toJson(combinedResult);
-	    out.print(jsonResult);
-
-		return null; // 뷰 이름을 반환하지 않음
-	
-	}
-
-}
-~~~
-</div>
-
-</br>
-
-### 3.4. Chart
+### 3.1. Chart
 
 #### 1. Bar-Chart : 연령별 단속 현황
 
+<details>
         
-<b>dashboard1.min.js</b>
-<div markdown="1">
+<summary><b>dashboard1.min.js</b></summary>
+<div markdown="1">                
+
        
 ~~~java
 
@@ -1119,12 +367,7 @@ $.ajax({
 		}
 	});
 ~~~
-
-
-
-
-
-
+</details>
 
 
 
