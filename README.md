@@ -14,6 +14,10 @@
 
 </br>
 
+# 개인 스터디
+### 1. [코랩](https://github.com/Limmaji/study_model)
+### 2. [AWS]()
+</br>
 
 # 프로젝트
 
